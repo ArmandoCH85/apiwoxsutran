@@ -4,7 +4,7 @@ gpswox:
   polling_interval_ms: 30000
 
 sutran:
-  url: "https://wstr.sutran.gob.pe/api/v2.0"
+  url: "https://ws03.sutran.gob.pe/api/v2.0"
   access_token: "${SUTRAN_ACCESS_TOKEN}"
   timeout_ms: 10000
 
