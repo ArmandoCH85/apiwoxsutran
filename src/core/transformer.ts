@@ -3,22 +3,18 @@ import { validateGPSDevice } from './validator';
 import { isValidDeviceTimestamp } from './date-validator';
 
 const KNOTS_TO_KMH = 1.852;
-const SUTRAN_DATE_FORMAT = 'YYYY-MM-DD HH:MM:SS';
 
 function formatTimeForSUTRAN(isoTimestamp: string): string {
-  const date = new Date(isoTimestamp);
+  const gmt5 = new Date(new Date(isoTimestamp).getTime() - 5 * 60 * 60 * 1000);
 
-  // Get UTC components and subtract 5 hours for GMT-5
-  let hours = date.getUTCHours() - 5;
-  if (hours < 0) hours += 24;
+  const year = gmt5.getUTCFullYear();
+  const month = String(gmt5.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(gmt5.getUTCDate()).padStart(2, '0');
+  const hours = String(gmt5.getUTCHours()).padStart(2, '0');
+  const minutes = String(gmt5.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(gmt5.getUTCSeconds()).padStart(2, '0');
 
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(date.getUTCDate()).padStart(2, '0');
-  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
-
-  return `${year}-${month}-${day} ${String(hours).padStart(2, '0')}:${minutes}:${seconds}`;
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
 function determineEvent(speedKmh: number, hasPanicSignal?: boolean): SUTRANEvent {

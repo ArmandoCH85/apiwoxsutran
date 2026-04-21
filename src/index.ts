@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { loadConfig } from './config';
 import { GPSWOXClientAdapter } from './adapters/gpswox-client';
 import { SUTRANClientAdapter } from './adapters/sutran-client';

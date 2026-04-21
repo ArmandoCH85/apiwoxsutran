@@ -6,7 +6,11 @@ import { AppConfig } from '../types';
 function resolveEnvVariables(obj: unknown): unknown {
   if (typeof obj === 'string') {
     return obj.replace(/\$\{(\w+)\}/g, (_, envVar) => {
-      return process.env[envVar] || '';
+      const val = process.env[envVar];
+      if (val === undefined || val === '') {
+        throw new Error(`Missing required environment variable: ${envVar}`);
+      }
+      return val;
     });
   }
   if (Array.isArray(obj)) {
