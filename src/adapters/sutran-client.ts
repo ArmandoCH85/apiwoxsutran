@@ -25,7 +25,7 @@ export class SUTRANClientAdapter implements SUTRANClient {
         }
       });
 
-      console.log(`[SUTRAN RESPONSE] plate=${payload.plate} code=${response.status} crc=${response.data?.crc} result=${response.data?.result}`);
+      console.log(`[SUTRAN RESPONSE] plate=${payload.plate} body=${JSON.stringify(response.data)}`);
 
       if (response.status === 401) {
         throw new Error('SUTRAN token expired or invalid. Stopping transmissions.');
