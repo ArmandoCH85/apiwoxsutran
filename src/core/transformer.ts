@@ -57,7 +57,7 @@ export function transform(device: GPSDevice): TransformResult {
       event,
       speed: Math.round(speedKmh),
       time_device: formatTimeForSUTRAN(device.position.timestamp),
-      imei: device.imei
+      imei: device.imei ? Number(device.imei) : undefined
     };
     
     return {

@@ -30,7 +30,7 @@ export interface SUTRANPayload {
   event: SUTRANEvent;
   speed: number; // km/h
   time_device: string; // YYYY-MM-DD HH:MM:SS GMT-5
-  imei?: string; // 15 digits, optional
+  imei?: number; // 15 digits integer, optional
 }
 
 export interface TransformResult {

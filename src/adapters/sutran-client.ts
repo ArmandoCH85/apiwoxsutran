@@ -62,14 +62,29 @@ export class SUTRANClientAdapter implements SUTRANClient {
       }
     } catch (err) {
       if (err && typeof err === 'object' && 'response' in err) {
-        const axiosErr = err as { response: { status: number; data: unknown; headers: unknown } };
-        console.error(`[SUTRAN HTTP ERROR] status=${axiosErr.response.status} body=${JSON.stringify(axiosErr.response.data)}`);
-        if (axiosErr.response.status === 403) {
-          throw new Error(`SUTRAN 403 Forbidden: IP not whitelisted or token rejected at network level`);
+        const axiosErr = err as { response: { status: number; data: Record<string, unknown> } };
+        const body = axiosErr.response.data;
+        const code = body?.code;
+        const result = body?.result;
+        const errors = body?.error;
+
+        if (code === 4002) {
+          console.error(`[SUTRAN ERROR] plate=${payload.plate} code=${code} result=${result} errors=${JSON.stringify(errors)}`);
+          throw new Error(`SUTRAN rejected: code=${code} result=${result}`);
         }
+        if (code === 5003) {
+          console.error(`[SUTRAN ERROR] plate=${payload.plate} code=${code} result=access-token invalid`);
+          throw new Error('SUTRAN token expired or invalid. Stopping transmissions.');
+        }
+        if (code) {
+          console.error(`[SUTRAN ERROR] plate=${payload.plate} code=${code} result=${result}`);
+          throw new Error(`SUTRAN rejected: code=${code} result=${result}`);
+        }
+
         if (axiosErr.response.status === 401) {
           throw new Error('SUTRAN token expired or invalid. Stopping transmissions.');
         }
+        console.error(`[SUTRAN HTTP ERROR] status=${axiosErr.response.status} body=${JSON.stringify(body)}`);
       }
       throw new Error(`SUTRAN send failed: ${err instanceof Error ? err.message : 'Unknown'}`);
     }
