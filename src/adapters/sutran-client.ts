@@ -31,10 +31,34 @@ export class SUTRANClientAdapter implements SUTRANClient {
         throw new Error('SUTRAN returned HTML instead of JSON. Check URL endpoint.');
       }
 
-      console.log(`[SUTRAN RESPONSE] plate=${payload.plate} body=${JSON.stringify(response.data)}`);
+      const data = response.data;
+      const code = data?.code;
+      const result = data?.result;
+      const crc = data?.crc;
+      const errors = data?.error;
 
-      if (response.status === 401) {
-        throw new Error('SUTRAN token expired or invalid. Stopping transmissions.');
+      if (code === 2000 && result === 'OK') {
+        console.log(`[SUTRAN OK] plate=${payload.plate} crc=${crc} code=${code} result=${result}`);
+      } else if (code === 5002) {
+        console.error(`[SUTRAN ERROR] plate=${payload.plate} code=${code} result=Se requiere header access-token`);
+      } else if (code === 5003) {
+        console.error(`[SUTRAN ERROR] plate=${payload.plate} code=${code} result=access-token invalid`);
+      } else if (code === 4001) {
+        console.error(`[SUTRAN ERROR] plate=${payload.plate} code=${code} result=Cadena JSON Invalida`);
+      } else if (code === 4002) {
+        console.error(`[SUTRAN ERROR] plate=${payload.plate} code=${code} result=Cadena JSON no cumple caracteristicas errors=${JSON.stringify(errors)}`);
+      } else if (code === 4003) {
+        console.error(`[SUTRAN ERROR] plate=${payload.plate} code=${code} result=Fecha del reporte en el pasado (mayor a 20 dias)`);
+      } else if (code === 4004) {
+        console.error(`[SUTRAN ERROR] plate=${payload.plate} code=${code} result=Fecha del reporte en el futuro`);
+      } else if (code === 5001) {
+        console.error(`[SUTRAN ERROR] plate=${payload.plate} code=${code} result=Solo admite metodos POST`);
+      } else {
+        console.log(`[SUTRAN RESPONSE] plate=${payload.plate} body=${JSON.stringify(data)}`);
+      }
+
+      if (code && code !== 2000) {
+        throw new Error(`SUTRAN rejected: code=${code} result=${result}`);
       }
     } catch (err) {
       if (err instanceof Error && err.message.includes('401')) {
