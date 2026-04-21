@@ -12,7 +12,8 @@ export class SUTRANClientAdapter implements SUTRANClient {
       baseURL: baseUrl,
       timeout: timeoutMs,
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       }
     });
   }
@@ -24,6 +25,11 @@ export class SUTRANClientAdapter implements SUTRANClient {
           'access-token': this.accessToken
         }
       });
+
+      const contentType = String(response.headers['content-type'] || '');
+      if (contentType.includes('text/html')) {
+        throw new Error('SUTRAN returned HTML instead of JSON. Check URL endpoint.');
+      }
 
       console.log(`[SUTRAN RESPONSE] plate=${payload.plate} body=${JSON.stringify(response.data)}`);
 
