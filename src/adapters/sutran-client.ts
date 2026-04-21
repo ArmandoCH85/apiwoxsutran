@@ -61,8 +61,15 @@ export class SUTRANClientAdapter implements SUTRANClient {
         throw new Error(`SUTRAN rejected: code=${code} result=${result}`);
       }
     } catch (err) {
-      if (err instanceof Error && err.message.includes('401')) {
-        throw new Error('SUTRAN token expired or invalid. Stopping transmissions.');
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosErr = err as { response: { status: number; data: unknown; headers: unknown } };
+        console.error(`[SUTRAN HTTP ERROR] status=${axiosErr.response.status} body=${JSON.stringify(axiosErr.response.data)}`);
+        if (axiosErr.response.status === 403) {
+          throw new Error(`SUTRAN 403 Forbidden: IP not whitelisted or token rejected at network level`);
+        }
+        if (axiosErr.response.status === 401) {
+          throw new Error('SUTRAN token expired or invalid. Stopping transmissions.');
+        }
       }
       throw new Error(`SUTRAN send failed: ${err instanceof Error ? err.message : 'Unknown'}`);
     }
