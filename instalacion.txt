@@ -13,56 +13,40 @@ https://github.com/ArmandoCH85/apiwoxsutran
 ---
 
 ## 2. Actualizar sistema
-```bash
 sudo dnf update -y
-```
 
 ## 3. Instalar Node.js 20
-```bash
 sudo dnf install -y nodejs npm
 node --version
-```
 
 ## 4. Crear usuario para el servicio
-```bash
 sudo useradd -m -s /bin/false gpsretransmitter
-```
 
 ## 5. Clonar repositorio desde GitHub
-```bash
 cd /home
 sudo git clone https://github.com/ArmandoCH85/apiwoxsutran.git gpsretransmitter
 sudo chown -R gpsretransmitter:gpsretransmitter /home/gpsretransmitter
-```
 
 ## 6. Instalar dependencias
-```bash
 cd /home/gpsretransmitter
 npm install --production
-```
 
 ## 7. Configurar variables de entorno
-```bash
 sudo nano /etc/environment
-```
 
 Agregar estas líneas:
-```
 GPSWOX_API_HASH=tu_hash_aqui
 SUTRAN_ACCESS_TOKEN=tu_token_aqui
-```
 
 Guardar y salir (Ctrl+X, luego S, luego Enter).
 
 ## 8. Configurar el servicio
 
 Crear archivo de servicio:
-```bash
 sudo nano /etc/systemd/system/gps-retransmitter.service
-```
 
 Copiar y pegar este contenido:
-```ini
+
 [Unit]
 Description=GPSWOX to SUTRAN Retransmission Service
 After=network.target
@@ -78,28 +62,21 @@ RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
-```
 
 Guardar y salir.
 
 ## 9. Habilitar y arrancar servicio
-```bash
 sudo systemctl daemon-reload
 sudo systemctl enable gps-retransmitter
 sudo systemctl start gps-retransmitter
-```
 
 ## 10. Verificar funcionamiento
 
 Ver estado del servicio:
-```bash
 sudo systemctl status gps-retransmitter
-```
 
 Ver logs en tiempo real:
-```bash
 sudo journalctl -u gps-retransmitter -f
-```
 
 ---
 
@@ -107,90 +84,65 @@ sudo journalctl -u gps-retransmitter -f
 
 ### GPSWOX API Hash
 Obtener un nuevo hash haciendo login:
-```bash
-curl -X POST https://drsecuritygps.com/api/login \
-  -d "email=sutran@drsecurity.com&password=Sutran2026"
-```
+curl -X POST https://drsecuritygps.com/api/login -d "email=sutran@drsecurity.com&password=Sutran2026"
 
-La respuesta incluye `user_api_hash` - usar ese valor en `GPSWOX_API_HASH`.
+La respuesta incluye user_api_hash - usar ese valor en GPSWOX_API_HASH.
 
 ### SUTRAN Access Token
-Usar el token proporcionado: `e712932b-8558-4d50-b1e0-6911e117a0b8`
+Usar el token proporcionado: e712932b-8558-4d50-b1e0-6911e117a0b8
 
 ---
 
 ## COMANDOS ÚTILES
 
 Reiniciar servicio:
-```bash
 sudo systemctl restart gps-retransmitter
-```
 
 Ver todos los logs:
-```bash
 sudo journalctl -u gps-retransmitter --no-pager
-```
 
 Detener servicio:
-```bash
 sudo systemctl stop gps-retransmitter
-```
 
 Deshabilitar inicio automático:
-```bash
 sudo systemctl disable gps-retransmitter
-```
 
 ---
 
 ## CONFIGURACIÓN
 
 Editar config.yaml para cambiar intervalo de polling:
-```bash
 cd /home/gpsretransmitter
 nano config.yaml
-```
 
 Ejemplo - cambiar a 60 segundos:
-```yaml
 gpswox:
   polling_interval_ms: 60000
-```
 
 Después de cambiar, reiniciar:
-```bash
 sudo systemctl restart gps-retransmitter
-```
 
 ---
 
 ## SOLUCIÓN DE PROBLEMAS
 
 Si el servicio no inicia:
-```bash
 sudo journalctl -u gps-retransmitter -n 50
-```
 
 Ver variables de entorno cargadas:
-```bash
 sudo systemctl show-environment
-```
 
 Ver último error:
-```bash
 sudo systemctl log -u gps-retransmitter --priority=err
-```
 
 ---
 
 ## ACTUALIZAR DESDE GITHUB
 
 Para actualizar a la última versión:
-```bash
 cd /home/gpsretransmitter
 sudo git pull origin main
 sudo systemctl restart gps-retransmitter
-```
 
 ---
 

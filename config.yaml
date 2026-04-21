@@ -1,6 +1,6 @@
 gpswox:
   url: "https://drsecuritygps.com/api"
-  api_hash: "$2y$10$q4W9RnbQVKbogwiPyHBpEOsqU61iNNK7S8xIW0WnOXgOjl.jVtbmG"
+  api_hash: "${GPSWOX_API_HASH}"
   polling_interval_ms: 30000
 
 sutran:
