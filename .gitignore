@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+*.log
+.DS_Store
+coverage/
+.env.local
+.env.production
+gpswox_raw.json
+all_devices.json

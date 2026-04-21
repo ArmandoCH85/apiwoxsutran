@@ -1,0 +1,13 @@
+gpswox:
+  url: "https://api.gpswox.org"
+  api_hash: "YOUR_GPSWOX_API_HASH"
+  polling_interval_ms: 30000
+
+sutran:
+  url: "https://api.sutran.gob.pe/v2"
+  access_token: "YOUR_SUTRAN_ACCESS_TOKEN"
+  timeout_ms: 10000
+
+app:
+  port: 3000
+  log_level: "info"

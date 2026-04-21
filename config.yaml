@@ -1,0 +1,13 @@
+gpswox:
+  url: "https://drsecuritygps.com/api"
+  api_hash: "$2y$10$q4W9RnbQVKbogwiPyHBpEOsqU61iNNK7S8xIW0WnOXgOjl.jVtbmG"
+  polling_interval_ms: 30000
+
+sutran:
+  url: "https://wstr.sutran.gob.pe/api/v2.0"
+  access_token: "${SUTRAN_ACCESS_TOKEN}"
+  timeout_ms: 10000
+
+app:
+  port: 3000
+  log_level: "info"
