@@ -40,6 +40,7 @@ export class PollingService {
               maxDelayMs: 30000
             })
           );
+          console.log(`[TRANSMITTED] plate=${result.payload.plate} imei=${result.payload.imei} event=${result.payload.event} speed=${result.payload.speed} km/h lat=${result.payload.geo[0]} lng=${result.payload.geo[1]}`);
           succeeded++;
         } catch (err) {
           if (err instanceof Error && (err.message.includes('401') || err.message.includes('authentication failed'))) {
