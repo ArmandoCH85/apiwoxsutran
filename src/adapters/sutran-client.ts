@@ -37,7 +37,7 @@ export class SUTRANClientAdapter implements SUTRANClient {
       const crc = data?.crc;
       const errors = data?.error;
 
-      if (code === 2000 && result === 'OK') {
+      if (code >= 2000 && code < 3000 && result === 'OK') {
         console.log(`[SUTRAN OK] plate=${payload.plate} crc=${crc} code=${code} result=${result}`);
       } else if (code === 5002) {
         console.error(`[SUTRAN ERROR] plate=${payload.plate} code=${code} result=Se requiere header access-token`);
@@ -57,7 +57,7 @@ export class SUTRANClientAdapter implements SUTRANClient {
         console.log(`[SUTRAN RESPONSE] plate=${payload.plate} body=${JSON.stringify(data)}`);
       }
 
-      if (code && code !== 2000) {
+      if (code && !(code >= 2000 && code < 3000)) {
         throw new Error(`SUTRAN rejected: code=${code} result=${result}`);
       }
     } catch (err) {
